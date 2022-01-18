@@ -1,36 +1,37 @@
 <script setup lang="ts">
+import { ref, reactive } from "vue";
 import Nav from "@/components/Nav.vue";
 import SideNav from "@/components/SideNav.vue";
 import Card from "@/components/Card.vue";
 import Footer from "@/components/Footer.vue";
+import TodoListData from "../../interface/Todo";
+import api from "@/api/api";
 
-import { ref } from "vue";
-
-const todoListData = ref([]);
+interface TodoListData {
+  id: string;
+  title: string;
+  description: string;
+}
+const todoListData = ref<TodoListData[]>([]);
 
 // const requestHeaders: HeadersInit = new Headers();
 // requestHeaders.set("Content-Type", "application/json");
 
 async function displayTodo() {
-  const response = await fetch(
-    "https://shrouded-refuge-36665.herokuapp.com/api/todos",
-    {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token") ?? "",
-      },
-    }
-  );
-  const todoList = await response.json();
+  const response = await api({
+    method: "GET",
+    url: "https://shrouded-refuge-36665.herokuapp.com/api/todos",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("token") ?? "",
+    },
+  });
+  const todoList = response.data;
   todoListData.value = todoList;
+  console.log(todoList);
 }
 displayTodo();
-
-//add todollist
-import { reactive } from "vue";
 
 //get from form
 const addTodo = reactive({
